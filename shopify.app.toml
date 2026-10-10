@@ -1,0 +1,36 @@
+name = "Optivexa"
+client_id = "5a046ca3089880a77fe6b32140d641b8"
+application_url = "https://optivexa.onkra.online"
+embedded = true
+
+
+[access_scopes]
+scopes = "write_products,write_files"
+
+[access.admin]
+direct_api_mode = "online"
+
+[auth]
+redirect_urls = [
+  "https://optivexa.onkra.online/auth/callback",
+  "https://optivexa.onkra.online/auth/shopify/callback",
+  "https://optivexa.onkra.online/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2026-04"
+
+[[webhooks.subscriptions]]
+topics = [ "app/uninstalled" ]
+compliance_topics = [ "customers/redact", "customers/data_request", "shop/redact" ]
+uri = "https://optivexa.onkra.online/webhooks/app/uninstalled"
+
+[[webhooks.subscriptions]]
+topics = [ "products/create" ]
+uri = "https://optivexa.onkra.online/webhooks/products/create"
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = false

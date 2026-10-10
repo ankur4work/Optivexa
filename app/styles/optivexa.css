@@ -1,0 +1,621 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Optivexa brand theme — "Cobalt Slate"
+
+   Royal blue on slate, with amber for attention, rose for failure and lime
+   for success. Every colour, radius and shadow the app paints is declared in
+   the :root block below and nowhere else, so re-theming is editing one block
+   rather than hunting hex codes across files.
+
+   The visual language is ARCHITECTURAL, and it is deliberately not the soft
+   shadow-and-squircle system this app was rebuilt from. Four rules define it,
+   and each is the inverse of what the previous build did:
+
+     1. HARD OFFSET SHADOWS, NEVER BLUR. Depth is a solid colour block offset
+        down-right (`4px 4px 0`), like ink on a printed card. There is no
+        blurred `box-shadow` variable to reach for, on purpose. If you find
+        yourself adding a blur radius to make something "lift", you are
+        reverting to the previous design.
+     2. CRISP GEOMETRY. 4px radius for controls, 8px for containers. Nothing
+        is a pill and nothing is a squircle — the previous build's signature
+        was a 34%/34% squircle icon tile, which does not appear here at all.
+        Shape interest comes from CLIPPED CORNERS (clip-path notches), not
+        from rounding.
+     3. CORNER BRACKETS, NOT ACCENT RAILS. The previous build marked its hero
+        and masthead with a 6px bar down the left edge. Here the motif is
+        L-shaped cobalt brackets at opposing corners, over a fine BLUEPRINT
+        CROSSHATCH (two crossed line gradients) rather than a dot grid.
+     4. KEYLINES ON THE LEFT, NOT BARS ON TOP. Metric cards carry a 3px cobalt
+        keyline down their leading edge; the previous build used a 3px accent
+        bar across the top of each card.
+
+   One palette rule that is easy to break: --opx-ok is LIME (a yellow-green),
+   not blue. The brand accent is royal blue, so a blue "success" tone would be
+   indistinguishable from an interactive or brand one. Lime still reads
+   unambiguously as positive while sitting in a visibly different hue family.
+   ────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Brand */
+  --opx-blue: #2563eb;
+  --opx-blue-lit: #3b82f6;
+  --opx-blue-deep: #1d4ed8;
+  --opx-navy: #1e3a8a;
+  --opx-navy-deep: #172554;
+
+  /* Ink + neutrals */
+  --opx-ink: #0f172a;
+  --opx-ink-2: #1e293b;
+  --opx-slate: #334155;
+  --opx-muted: #64748b;
+  --opx-line: #dbe3f0;
+  --opx-line-soft: #e8eef8;
+
+  /* Tones — each in a distinct hue family from the brand */
+  --opx-amber: #f59e0b;
+  --opx-rose: #dc2626;
+  --opx-lime: #65a30d;
+
+  /* Washes */
+  --opx-wash: #f5f8ff;
+  --opx-wash-2: #eaf1ff;
+  --opx-tint: #f8fafd;
+
+  /* Gradients */
+  --opx-grad: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+  --opx-grad-deep: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+  --opx-grad-slate: linear-gradient(135deg, #0f172a 0%, #1e293b 46%, #1e3a8a 100%);
+
+  /* Hard offset shadows — zero blur, by design (rule 1) */
+  --opx-lift: 4px 4px 0 rgba(30, 58, 138, 0.1);
+  --opx-lift-hover: 6px 6px 0 rgba(30, 58, 138, 0.16);
+  --opx-lift-strong: 6px 6px 0 rgba(23, 37, 84, 0.26);
+
+  --opx-ring: rgba(37, 99, 235, 0.22);
+  --opx-radius: 4px;
+  --opx-radius-lg: 8px;
+
+  /* The blueprint crosshatch (rule 3). Two crossed line gradients. */
+  --opx-blueprint:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.07) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.07) 0 1px, transparent 1px 22px);
+}
+
+/* A square with its top-right corner cut off — the shape signature (rule 2).
+   Used for every badge and icon container in the app. */
+.opx-notch {
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 0 100%);
+}
+
+/* ── Polaris primary buttons ────────────────────────────────────────────── */
+/* Flat cobalt with a solid navy bottom edge, so the control reads as a
+   physical key rather than a glossy capsule. */
+.Polaris-Button--variantPrimary {
+  background: var(--opx-grad) !important;
+  border: 1px solid var(--opx-blue-deep) !important;
+  border-bottom-width: 2px !important;
+  border-radius: var(--opx-radius) !important;
+  box-shadow: none !important;
+}
+.Polaris-Button--variantPrimary:hover:not(:disabled) {
+  background: var(--opx-grad-deep) !important;
+  border-color: var(--opx-navy) !important;
+}
+.Polaris-Button--variantPrimary:active:not(:disabled) {
+  background: var(--opx-navy) !important;
+  border-color: var(--opx-navy-deep) !important;
+  /* Pressed: the bottom edge collapses, so the key visibly travels. */
+  border-bottom-width: 1px !important;
+  transform: translateY(1px);
+}
+/* A disabled button must LOOK disabled. The rule above sets the background with
+   !important on every primary button, which would otherwise override Polaris's
+   own disabled styling — a button that cannot be clicked would look exactly
+   like one that can, and clicking it would appear to do nothing. */
+.Polaris-Button--variantPrimary:disabled,
+.Polaris-Button--variantPrimary[aria-disabled="true"] {
+  background: #e9edf5 !important;
+  border-color: #dbe3f0 !important;
+  color: #94a3b8 !important;
+  border-bottom-width: 1px !important;
+  box-shadow: none !important;
+  transform: none;
+  cursor: not-allowed;
+}
+.Polaris-Button--variantPrimary:disabled .Polaris-Text--root,
+.Polaris-Button--variantPrimary[aria-disabled="true"] .Polaris-Text--root {
+  color: inherit !important;
+}
+
+/* ── Links, focus rings, checkboxes ─────────────────────────────────────── */
+.Polaris-Link { color: var(--opx-blue) !important; }
+.Polaris-Link:hover { color: var(--opx-navy) !important; }
+
+.Polaris-TextField__Input:focus {
+  border-color: var(--opx-blue) !important;
+  box-shadow: 0 0 0 3px var(--opx-ring) !important;
+}
+
+.Polaris-Checkbox__Input:checked + .Polaris-Checkbox__Backdrop {
+  background: var(--opx-blue) !important;
+  border-color: var(--opx-blue-deep) !important;
+}
+
+/* ── Hero — slate panel, corner brackets, blueprint crosshatch ──────────── */
+.opx-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--opx-grad-slate);
+  border: 1px solid var(--opx-navy-deep);
+  border-radius: var(--opx-radius-lg);
+  padding: 30px 34px;
+  margin-bottom: 20px;
+  color: #ffffff;
+  box-shadow: var(--opx-lift-strong);
+}
+/* Blueprint crosshatch — crossed rules, not a dot field. Masked so it fades
+   out behind the copy instead of competing with it. */
+.opx-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--opx-blueprint);
+  mask-image: linear-gradient(115deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0) 72%);
+  -webkit-mask-image: linear-gradient(115deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0) 72%);
+  pointer-events: none; /* decorative only — must not block the hero button */
+  z-index: -1;
+}
+/* The signature: an L-shaped cobalt bracket in two opposing corners. Drawn
+   with borders on a single pseudo-element pair so there is no extra markup. */
+.opx-hero::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 26px;
+  height: 26px;
+  border-top: 2px solid var(--opx-blue-lit);
+  border-left: 2px solid var(--opx-blue-lit);
+  pointer-events: none;
+  z-index: -1;
+}
+.opx-hero-bracket {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 26px;
+  height: 26px;
+  border-bottom: 2px solid var(--opx-blue-lit);
+  border-right: 2px solid var(--opx-blue-lit);
+  pointer-events: none;
+}
+.opx-hero-copy { max-width: 620px; }
+.opx-hero-copy h1 {
+  font-size: 29px;
+  line-height: 1.18;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 10px 0;
+  color: #ffffff;
+}
+.opx-hero-copy p {
+  font-size: 14px;
+  line-height: 1.58;
+  color: rgba(219, 234, 254, 0.8);
+  margin: 0;
+}
+/* Wordmark tag — a hard-edged bordered box with a leading square, not a pill. */
+.opx-hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #bfdbfe;
+  background: rgba(37, 99, 235, 0.16);
+  border: 1px solid rgba(59, 130, 246, 0.42);
+  border-radius: 2px;
+  padding: 5px 11px;
+  margin: 0;
+}
+.opx-hero-tag::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  background: var(--opx-blue-lit);
+}
+/* On the slate hero the cobalt key would disappear, so it inverts to white
+   with navy type — the one place the button reverses. */
+.opx-hero .Polaris-Button--variantPrimary {
+  background: #ffffff !important;
+  border: 1px solid #bfdbfe !important;
+  border-bottom: 2px solid #93b4fd !important;
+  color: var(--opx-navy-deep) !important;
+}
+.opx-hero .Polaris-Button--variantPrimary:hover:not(:disabled) {
+  background: #eaf1ff !important;
+  border-color: #93b4fd !important;
+  color: var(--opx-navy-deep) !important;
+}
+.opx-hero .Polaris-Button--variantPrimary:active:not(:disabled) {
+  background: #dbe7ff !important;
+  color: var(--opx-navy-deep) !important;
+}
+.opx-hero .Polaris-Button--variantPrimary .Polaris-Text--root { color: inherit !important; }
+
+/* ── Metric cards — leading keyline, hard offset lift (rule 4) ──────────── */
+.opx-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 900px) {
+  .opx-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.opx-metric {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid var(--opx-line);
+  /* The keyline IS the left border, so it follows the radius cleanly. */
+  border-left: 3px solid var(--opx-blue);
+  border-radius: var(--opx-radius);
+  padding: 15px 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+  box-shadow: var(--opx-lift);
+  transition: box-shadow 0.16s ease, transform 0.16s ease, border-color 0.16s ease;
+}
+.opx-metric:hover {
+  transform: translate(-1px, -1px);
+  border-color: #c3d4f2;
+  border-left-color: var(--opx-navy);
+  box-shadow: var(--opx-lift-hover);
+}
+.opx-metric-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--opx-muted);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+/* A fixed figure height keeps numbers and pills on one baseline across tiles. */
+.opx-metric-value,
+.opx-metric-pill {
+  display: flex;
+  align-items: center;
+  min-height: 30px;
+  max-width: 100%;
+}
+.opx-metric-value {
+  font-size: 27px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--opx-ink);
+  margin: 0;
+}
+/* Text-valued metrics read as a status pill, not a broken headline. */
+.opx-metric-pill {
+  box-sizing: border-box;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 0 10px;
+  border-radius: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.opx-metric-pill--brand     { background: var(--opx-wash-2); color: var(--opx-navy); border: 1px solid #c3d4f2; }
+.opx-metric-pill--success   { background: #f3f9e8; color: #3f6212; border: 1px solid #d6e9b4; }
+.opx-metric-pill--attention { background: #fff8e9; color: #92400e; border: 1px solid #f6e0b0; }
+.opx-metric-pill--subdued   { background: #f1f5f9; color: var(--opx-slate); border: 1px solid #e2e8f0; }
+
+/* ── Usage meter — continuous track with tick marks and a caret ─────────── */
+/* Deliberately NOT the previous build's 20 discrete segments: one solid fill
+   under a ruled overlay, so it reads as a gauge rather than a row of blocks. */
+.opx-meter {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  background: #e8eef8;
+  border: 1px solid var(--opx-line);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.opx-meter-fill {
+  height: 100%;
+  background: var(--opx-grad);
+  border-right: 1px solid var(--opx-navy);
+  transition: width 0.28s ease;
+}
+/* The ruler: tick marks every 10% laid over the whole track. */
+.opx-meter-ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(15, 23, 42, 0.16) 0 1px,
+    transparent 1px 10%
+  );
+}
+.opx-meter.is-critical .opx-meter-fill {
+  background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+  border-right-color: #991b1b;
+}
+/* The caret sits under the fill edge, marking the exact reading. */
+.opx-meter-wrap { position: relative; padding-bottom: 6px; }
+.opx-meter-caret {
+  position: absolute;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-bottom: 5px solid var(--opx-navy);
+  transform: translateX(-4px);
+  transition: left 0.28s ease;
+}
+.opx-meter-wrap.is-critical .opx-meter-caret { border-bottom-color: #991b1b; }
+
+/* ── Tool rows — one stacked list, not a 2-up tile grid ─────────────────── */
+/* The previous build laid these out as four free-standing cards in a 2x2 grid.
+   Here they are rows inside a single bordered container, each led by a large
+   index numeral, which makes the list scannable top-to-bottom. */
+.opx-tools {
+  background: #ffffff;
+  border: 1px solid var(--opx-line);
+  border-radius: var(--opx-radius-lg);
+  box-shadow: var(--opx-lift);
+  overflow: hidden;
+}
+.opx-tool {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border-top: 1px solid var(--opx-line-soft);
+  transition: background 0.16s ease;
+}
+.opx-tool:first-child { border-top: 0; }
+.opx-tool:hover { background: var(--opx-tint); }
+/* Locked rows read as unavailable without going fully grey. */
+.opx-tool.is-locked { background: var(--opx-wash); }
+.opx-tool.is-locked:hover { background: var(--opx-wash-2); }
+/* Index numeral — the row's anchor, in tabular figures so the column aligns. */
+.opx-tool-index {
+  flex: 0 0 auto;
+  width: 34px;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  color: #c3d4f2;
+}
+.opx-tool.is-locked .opx-tool-index { color: #cbd5e1; }
+/* Icon container — hard-edged square with a clipped top-right corner. */
+.opx-tool-icon {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 0 100%);
+  background: var(--opx-wash-2);
+  border: 1px solid #c3d4f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  line-height: 1;
+  color: var(--opx-navy);
+}
+.opx-tool.is-locked .opx-tool-icon {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+}
+.opx-tool-body { min-width: 0; flex: 1 1 auto; }
+.opx-tool-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--opx-ink);
+  margin: 0;
+}
+.opx-tool-desc {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--opx-muted);
+  margin: 5px 0 0 0;
+}
+.opx-tool-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+.opx-tool-chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.opx-tool-chip--on        { background: var(--opx-wash-2); color: var(--opx-navy); border: 1px solid #c3d4f2; }
+.opx-tool-chip--off       { background: #f1f5f9; color: var(--opx-slate); border: 1px solid #e2e8f0; }
+.opx-tool-chip--attention { background: #fff8e9; color: #92400e; border: 1px solid #f6e0b0; }
+@media (max-width: 760px) {
+  .opx-tool { flex-wrap: wrap; }
+  .opx-tool-index { display: none; }
+  .opx-tool-foot { width: 100%; margin-left: 58px; justify-content: space-between; }
+}
+
+/* ── Page topbar — square badge, bracketed meta, no tinted band ─────────── */
+/* The previous build washed this bar with a left-to-right brand gradient.
+   Here it is plain white with a hairline and a hard lift, so the badge and the
+   meta box are the only coloured elements. */
+.opx-topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid var(--opx-line);
+  border-radius: var(--opx-radius-lg);
+  padding: 13px 16px;
+  margin-bottom: 4px;
+  box-shadow: var(--opx-lift);
+}
+.opx-topbar-badge {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 0 100%);
+  background: var(--opx-grad);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  line-height: 1;
+  color: #ffffff;
+}
+.opx-topbar-text { min-width: 0; }
+.opx-topbar-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--opx-ink);
+  margin: 0;
+}
+.opx-topbar-sub {
+  font-size: 12px;
+  color: var(--opx-muted);
+  margin: 3px 0 0 0;
+}
+/* Meta reads as a bracketed label — square, mono-ish, navy on wash. */
+.opx-topbar-meta {
+  margin-left: auto;
+  flex: 0 0 auto;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--opx-navy);
+  background: var(--opx-wash-2);
+  border: 1px solid #c3d4f2;
+  border-radius: 2px;
+  padding: 5px 9px;
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .opx-topbar-meta { display: none; }
+}
+
+/* ── Stat row used on the optimizer / analytics pages ──────────────────── */
+/* Label BELOW the value here, with a cobalt underline between them — the
+   inverse of the previous build's label-above-value tile. */
+.opx-figure {
+  background: #ffffff;
+  border: 1px solid var(--opx-line);
+  border-radius: var(--opx-radius);
+  padding: 15px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  height: 100%;
+  min-width: 0;
+  box-shadow: var(--opx-lift);
+}
+.opx-figure-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--opx-muted);
+  margin: 0;
+  order: 2; /* label sits under the figure */
+}
+.opx-figure-value {
+  font-size: 25px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--opx-ink);
+  margin: 0;
+  order: 1;
+  padding-bottom: 7px;
+  border-bottom: 2px solid var(--opx-blue);
+}
+.opx-figure-value--alert { color: var(--opx-rose); border-bottom-color: var(--opx-rose); }
+.opx-figure-value--good { color: #3f6212; border-bottom-color: var(--opx-lime); }
+/* Anything after the label (Polaris Text captions) keeps document order. */
+.opx-figure > *:not(.opx-figure-label):not(.opx-figure-value) { order: 3; }
+.opx-figure-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 900px) {
+  .opx-figure-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.opx-figure-grid--three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 900px) {
+  .opx-figure-grid--three { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ── Image run tiles ──────────────────────────────────────────────────── */
+/* Square frames with a clipped corner, matching the badge geometry. */
+.opx-shot {
+  padding: 3px;
+  border-radius: 2px;
+  border: 2px solid var(--opx-line);
+  background: #ffffff;
+  line-height: 0;
+  clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 0 100%);
+}
+.opx-shot--working { border-color: var(--opx-blue); box-shadow: 0 0 0 3px var(--opx-ring); }
+.opx-shot--done { border-color: var(--opx-lime); }
+.opx-shot--failed { border-color: var(--opx-rose); }
+.opx-shot--skipped { border-color: #cbd5e1; }
+
+/* ── Numbered step marker (Help page) ─────────────────────────────────── */
+.opx-step {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  background: var(--opx-grad);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ── Feature mark used in billing's "included" list ────────────────────── */
+/* A 2px cobalt square, not a rotated diamond. */
+.opx-mark {
+  width: 7px;
+  height: 7px;
+  background: var(--opx-blue);
+  flex-shrink: 0;
+}
